@@ -2,10 +2,12 @@ import React , {useState, useEffect} from 'react';
 import Modal from "@material-ui/core/Modal"
 import Post from './Post'
 import './App.css';
+
 import {makeStyles} from '@material-ui/core/styles'
 
 import {db, auth} from './firebase.jsx'
 import {Button, Input} from '@material-ui/core';
+import ImageUploads from './ImageUploads'
 
     function getModalStyle() 
     {
@@ -49,12 +51,13 @@ export default function App()
             // imageUrl: "http://gifcandy.net/wp-content/uploads/2016/04/gifcandy-titfuck-5.gif"
           // }
         ]);
-
+        const [openSignIn,setOpenSignIn] = useState(false);
         const [open,setOpen]=useState(false);
         const [username,setUsername]=useState('');
         const [password,setPassword]=useState('');
         const [email,setEmail]=useState('');
         const [user,setUser] = useState(null)
+        
 
         //useEffect -> run piece of code based on a specific condition
         useEffect(()=> {
@@ -74,10 +77,10 @@ export default function App()
           }
         }, [user,username]);
 
-        
+
         useEffect(()=> {
           //this is where the code runs
-          db.collection('posts').onSnapshot((snapshot)=> {
+          db.collection('posts').orderBy('timestamp','desc').onSnapshot((snapshot)=> {
             //everytimes a new post is added, this code fires...
             setPosts(snapshot.docs.map(doc=>({
             id:doc.id,
@@ -96,15 +99,30 @@ export default function App()
               })
             })
             .catch(error=>alert(error.message))
+            setOpen(false)
         }
 
+        const signIn =(event) => {
+          event.preventDefault();
+          auth
+          .signInWithEmailAndPassword(email,password)
+          .catch((error) =>alert(error.message))
+          setOpenSignIn(false);
+
+        }
         return (  
+        
                /* Header */
                 /* Posts*/
                 /* Posts */
           <div className="App">
+           {user?.displayName ? (
+            <ImageUploads username={user.displayName}/>
+           ): (
+             <h3>Sorry you need to login to upload</h3>
+           )}
            
-          <Modal
+           <Modal
             open={open}
             onClose={()=>setOpen(false)}
           >
@@ -123,6 +141,27 @@ export default function App()
                    </form>
               </div>
           </Modal>
+
+
+          <Modal
+            open={openSignIn}
+            onClose={()=>setOpenSignIn(false)}
+          >
+              <div style={modalStyle} className={classes.paper}>
+              <form className="app__signup">
+                <center>
+                      {/* Header Logo*/}
+                     
+                   <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" />
+              </center>
+                 
+                   <Input placeholder="email" type="text" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+                   <Input placeholder="password" type="password" value={password} onChange={(e)=>setPassword(e.target.value)}/>
+                   <Button type="submit" onClick={signIn}>SignIn</Button>
+
+                   </form>
+              </div>
+          </Modal>
          
                {/* Header */}
             <div className="app__header">
@@ -132,14 +171,14 @@ export default function App()
 
             </div> 
             {user ? (
-              <Button onClick={()=>setOpen(true)}> Logout </Button>
+              <Button onClick={()=>auth.signOut()}> Logout </Button>
               ): (
-                <Button onClick={()=>setOpen(true)}> Sign up</Button>
-              
-              
+                <div className="app__loginContainer">
+                <Button onClick={()=>setOpenSignIn(true)}>Sign in</Button>
+                <Button onClick={()=>setOpen(true)}> Sign up</Button>  
+                </div>                       
             )}  
            
-
               <h1>Hello Shirshak kandel Lets build an instragram clone with React and Firebase</h1>
             {
               posts.map(({id,post}) => 
