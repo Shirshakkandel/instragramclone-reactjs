@@ -2,18 +2,34 @@
    margin:0;
    
 }
-
-
 .app{
    background-color: #fafafa;
    height: 100vh;
 }
 .app__header{
+   position: sticky;
+   top: 0;
+   z-index: 1;
    background-color: white;
    padding: 20px;
    object-fit: contain;
    border-bottom: 1px solid lightgrey;
+   display: flex;
+   justify-content: space-between;
    
+}
+
+.app__postright {
+   margin-left: 20px;
+}
+.app__posts{
+   padding: 20px;
+
+   justify-content: center;
+}
+
+.app__headerImage{
+   object-fit: contain;
 }
 
 .app__signup{
@@ -21,7 +37,10 @@
    flex-direction: column;
 }
 
-form{
-   display: flex;
-   flex-direction: column;
+@media(min-width:750px){
+   .app__posts {
+      display: flex;
+   
+   }
 }
+
