@@ -4,7 +4,12 @@ import {storage,db} from "./firebase"
 import firebase from "firebase";
 import './ImageUpload.css';
 
-function ImageUploads({username}) {
+//rfce
+
+function ImageUploads({username})
+ {
+
+     
     const [image,setImage] = useState(null);
     const [progress,setProgress] = useState(0);
     const[caption,setCaption] = useState('');
@@ -17,24 +22,27 @@ function ImageUploads({username}) {
         }
     }
 
+
     const handleUpload = ()=> 
     {
         const uploadTask=storage.ref(`images/${image.name}`).put(image);
 
         uploadTask.on(
             "state_changed",
-            (snapshot)=>{
+            snapshot=>{
                 //progress function 
                 const progress = Math.round(
                     (snapshot.bytesTransferred /snapshot.totalBytes)*100
                 );
                 setProgress(progress);
-            },          
+            },  
+
             (error) =>{
                 //Error function
                 console.log(error);
                 alert(error.mesaage);
             },
+
             ()=>{
                 //complete function
                 storage
@@ -59,6 +67,9 @@ function ImageUploads({username}) {
 
         )
     }
+
+    //+++++============================================___----------------------=-=-=//
+
     return (
         <div className="imageupload">
             <h1>ImageUploads </h1>   

@@ -8,7 +8,8 @@ import firebase from 'firebase';
    const [comments,setComments]= useState([]);
    const [comment, setComment] = useState('');
 
-   useEffect(() => {
+   useEffect(() => 
+   {
      let unsubscribe;
      if(postId){
       unsubscribe = db
@@ -40,18 +41,20 @@ import firebase from 'firebase';
      
    }
 
+//=========================================================//
   return (
     <div className="post">
      {/* header -> avatar+username */}
     <div className="post__header">
       <Avatar 
       className="post__avatar"
-      alt="Shirshakkandel"
+      alt={username}
       src="/static/images/avatar/1.jpg"
       />
 
       <h3>{username}</h3>
     </div>
+
       {/* Image*/}
       <img  className="post__image" src={imageUrl}  alt="Post Image" />
       {/* username+caption */}
